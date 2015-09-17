@@ -1,5 +1,6 @@
 package com.cedarsoft.fish.maven;
 
+import com.google.common.collect.ImmutableList;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -26,7 +27,9 @@ import org.apache.maven.project.DefaultProjectBuilderConfiguration;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.tools.plugin.generator.GeneratorUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -105,45 +108,109 @@ public class MavenCompletionGenerator extends AbstractMojo {
       System.out.println("available versions " + artifact.getAvailableVersions());
 
 
-      Plugin plugin = new Plugin();
-      plugin.setGroupId("net.sourceforge.cobertura");
-      plugin.setArtifactId("cobertura");
-      plugin.setVersion("2.1.1");
-
-      plugin.setGroupId("com.cedarsoft.fish");
-      plugin.setArtifactId("maven");
-      plugin.setVersion("1.0.0-SNAPSHOT");
-
-      //Old plugin?
-      plugin.setGroupId("maven-plugins");
-      plugin.setArtifactId("maven-cobertura-plugin");
-      plugin.setVersion("1.4");
-
-      plugin.setGroupId("org.apache.maven.plugins");
-      plugin.setArtifactId("maven-compiler-plugin");
-      plugin.setVersion("3.3");
+      addDefaultPlugins();
+      //plugin.setGroupId("net.sourceforge.cobertura");
+      //plugin.setArtifactId("cobertura");
+      //plugin.setVersion("2.1.1");
+      //
+      //plugin.setGroupId("com.cedarsoft.fish");
+      //plugin.setArtifactId("maven");
+      //plugin.setVersion("1.0.0-SNAPSHOT");
+      //
+      ////Old plugin?
+      //plugin.setGroupId("maven-plugins");
+      //plugin.setArtifactId("maven-cobertura-plugin");
+      //plugin.setVersion("1.4");
 
 
-
-      PluginDescriptor pluginDescriptor = pluginManager.loadPluginDescriptor(plugin, project, session);
-      System.out.println("############");
-      System.out.println("pluginDescriptor = " + pluginDescriptor);
-      System.out.println("description = " + pluginDescriptor.getDescription());
-
-      List<MojoDescriptor> mojos = pluginDescriptor.getMojos();
-      for (MojoDescriptor mojo : mojos) {
-        System.out.println("-------------");
-        System.out.println("goal " + mojo.getGoal());
-        System.out.println("full goal name = " + mojo.getFullGoalName());
-        System.out.println("description: " + mojo.getDescription());
+      for (Plugin plugin : plugins) {
+        printCompletion(plugin);
       }
-
-
-      //pluginManager.getPluginDescriptorForPrefix()
-
 
     } catch (ProjectBuildingException | PluginManagerException | ArtifactResolutionException | PluginNotFoundException | PluginVersionNotFoundException | InvalidPluginException | ArtifactNotFoundException | PluginVersionResolutionException | InvalidVersionSpecificationException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private void addDefaultPlugins() {
+
+    for (String defaultPluginName : defaultPluginNames) {
+      Plugin plugin = new Plugin();
+      plugin.setGroupId("org.apache.maven.plugins");
+      plugin.setArtifactId("maven-" + defaultPluginName + "-plugin");
+      plugins.add(plugin);
+    }
+
+
+  }
+
+  private final List<String> defaultPluginNames = ImmutableList.of(
+    "clean",
+    "compiler",
+    "deploy",
+    "failsafe",
+    "install",
+    "resources",
+    "site",
+    "surefire",
+    "verifier",
+
+    "ear",
+    "ejb",
+    "jar",
+    "rar",
+    //"app-client/acr",
+    "shade",
+    "source",
+
+    "changelog",
+    "changes",
+    "checkstyle",
+    "doap",
+    "docck",
+    "javadoc",
+    "jxr",
+    "linkcheck",
+    "pmd",
+    "project-info-reports",
+    "surefire-report",
+
+    "ant",
+    "antrun",
+    "archetype",
+    "assembly",
+    "dependency",
+    "enforcer",
+    "gpg",
+    "help",
+    "invoker",
+    "jarsigner",
+    "patch",
+    "pdf",
+    "plugin",
+    "release",
+    "remote-resources",
+    "repository",
+    "scm",
+    "scm-publish",
+    "stage",
+    "toolchains",
+    "eclipse"
+  );
+
+  private final List<Plugin> plugins = new ArrayList<>();
+
+  private void printCompletion(Plugin plugin) throws ArtifactResolutionException, PluginVersionResolutionException, ArtifactNotFoundException, InvalidVersionSpecificationException, InvalidPluginException, PluginManagerException, PluginNotFoundException, PluginVersionNotFoundException {
+    PluginDescriptor pluginDescriptor = pluginManager.loadPluginDescriptor(plugin, project, session);
+    List<MojoDescriptor> mojos = pluginDescriptor.getMojos();
+    for (MojoDescriptor mojo : mojos) {
+      StringBuilder builder = new StringBuilder();
+      builder.append("complete -c mvn -a \"").append(mojo.getFullGoalName()).append("\" -d \"").append(replaceSpecialChars(mojo.getDescription())).append("\"");
+      System.out.println(builder.toString());
+    }
+  }
+
+  private static String replaceSpecialChars(String description) {
+    return GeneratorUtils.toText(description).replace("\n", "\\n").replace("\t", "\\t");
   }
 }

@@ -91,6 +91,12 @@
       <scope>provided</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-tools-generators</artifactId>
+      <version>3.3</version>
+    </dependency>
+
     <!-- plexus -->
     <dependency>
       <groupId>org.codehaus.plexus</groupId>
