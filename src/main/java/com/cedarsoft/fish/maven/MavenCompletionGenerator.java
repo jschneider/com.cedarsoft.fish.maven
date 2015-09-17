@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Very simple, mojo that creates the mvn.fish completion part for the plugins.
+ * This is just a hack. Not ready for production...
  * @author Johannes Schneider (<a href="mailto:js@cedarsoft.com">js@cedarsoft.com</a>)
  */
 @Mojo(name = "create", requiresProject = false, aggregator = true)
