@@ -110,6 +110,7 @@ public class MavenCompletionGenerator extends AbstractMojo {
 
       addDefaultPlugins();
       addMojoHausPlugins();
+      addOtherPlugins();
       //plugin.setGroupId("net.sourceforge.cobertura");
       //plugin.setArtifactId("cobertura");
       //plugin.setVersion("2.1.1");
@@ -133,22 +134,34 @@ public class MavenCompletionGenerator extends AbstractMojo {
     }
   }
 
+  private void addOtherPlugins() {
+    addPlugin("org.sonatype.plugins", "nexus-staging-maven-plugin");
+    addPlugin("com.google.appengine", "appengine-maven-plugin");
+    addPlugin("com.simpligility.maven.plugins", "android-maven-plugin");
+    addPlugin("org.liquibase", "liquibase-maven-plugin");
+    addPlugin("external.atlassian.jgitflow", "jgitflow-maven-plugin");
+    addPlugin("org.springframework.boot", "spring-boot-maven-plugin");
+  }
+
   private void addMojoHausPlugins() {
     for (String defaultPluginName : mojoHausPlugins) {
-      Plugin plugin = new Plugin();
-      plugin.setGroupId("org.codehaus.mojo");
-      plugin.setArtifactId(defaultPluginName + "-maven-plugin");
-      plugins.add(plugin);
+      String groupId = "org.codehaus.mojo";
+      String artifactId = defaultPluginName + "-maven-plugin";
+      addPlugin(groupId, artifactId);
     }
   }
 
   private void addDefaultPlugins() {
     for (String defaultPluginName : defaultPluginNames) {
-      Plugin plugin = new Plugin();
-      plugin.setGroupId("org.apache.maven.plugins");
-      plugin.setArtifactId("maven-" + defaultPluginName + "-plugin");
-      plugins.add(plugin);
+      addPlugin("org.apache.maven.plugins", "maven-" + defaultPluginName + "-plugin");
     }
+  }
+
+  private void addPlugin(String groupId, String artifactId) {
+    Plugin plugin = new Plugin();
+    plugin.setGroupId(groupId);
+    plugin.setArtifactId(artifactId);
+    plugins.add(plugin);
   }
 
   private final List<String> defaultPluginNames = ImmutableList.of(
