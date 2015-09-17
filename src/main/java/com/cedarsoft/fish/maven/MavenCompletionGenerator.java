@@ -278,6 +278,6 @@ public class MavenCompletionGenerator extends AbstractMojo {
   }
 
   private static String replaceSpecialChars(String description) {
-    return GeneratorUtils.toText(description).replace("\n", "\\n").replace("\t", "\\t");
+    return GeneratorUtils.toText(description).replace("\n", " ").replace("\t", " ").replace("${", "\\${");
   }
 }
