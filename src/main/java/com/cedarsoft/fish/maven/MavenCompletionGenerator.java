@@ -74,15 +74,6 @@ public class MavenCompletionGenerator extends AbstractMojo {
   @org.apache.maven.plugins.annotations.Parameter(defaultValue = "${localRepository}", required = true, readonly = true)
   private ArtifactRepository localRepository;
 
-  /**
-   * Remote repositories used for the project.
-   *
-   * @since 2.1
-   */
-  @org.apache.maven.plugins.annotations.Parameter(defaultValue = "${project.remoteArtifactRepositories}",
-    required = true, readonly = true)
-  private List<ArtifactRepository> remoteRepositories;
-
   @Component
   private ArtifactFactory artifactFactory;
 
