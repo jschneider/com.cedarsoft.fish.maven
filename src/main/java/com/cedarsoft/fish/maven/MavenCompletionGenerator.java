@@ -109,6 +109,7 @@ public class MavenCompletionGenerator extends AbstractMojo {
 
 
       addDefaultPlugins();
+      addMojoHausPlugins();
       //plugin.setGroupId("net.sourceforge.cobertura");
       //plugin.setArtifactId("cobertura");
       //plugin.setVersion("2.1.1");
@@ -132,16 +133,22 @@ public class MavenCompletionGenerator extends AbstractMojo {
     }
   }
 
-  private void addDefaultPlugins() {
+  private void addMojoHausPlugins() {
+    for (String defaultPluginName : mojoHausPlugins) {
+      Plugin plugin = new Plugin();
+      plugin.setGroupId("org.codehaus.mojo");
+      plugin.setArtifactId(defaultPluginName + "-maven-plugin");
+      plugins.add(plugin);
+    }
+  }
 
+  private void addDefaultPlugins() {
     for (String defaultPluginName : defaultPluginNames) {
       Plugin plugin = new Plugin();
       plugin.setGroupId("org.apache.maven.plugins");
       plugin.setArtifactId("maven-" + defaultPluginName + "-plugin");
       plugins.add(plugin);
     }
-
-
   }
 
   private final List<String> defaultPluginNames = ImmutableList.of(
@@ -196,6 +203,66 @@ public class MavenCompletionGenerator extends AbstractMojo {
     "stage",
     "toolchains",
     "eclipse"
+  );
+
+  private final List<String> mojoHausPlugins = ImmutableList.of(
+    "jboss-packaging",
+    "was6",
+    "weblogic",
+    "antlr",
+    "aspectj",
+    "axistools",
+    "castor",
+    "commons-attributes",
+    "gwt",
+    "hibernate3",
+    "idlj",
+    "javacc",
+    "jaxb2",
+    "jpox",
+    "jslint",
+    "js-import",
+    "jspc",
+    "openjpa",
+    "rmic",
+    "sablecc",
+    "sqlj",
+    "xdoclet",
+    "xmlbeans",
+    "nbm",
+    "clirr",
+    "cobertura",
+    "scmchangelog",
+    "sonar",
+    "taglist",
+    "javancss",
+    "jdepend",
+    "codenarc",
+    "findbugs",
+    "fitnesse",
+    "selenium",
+    "webtest",
+    "chronos-jmeter",
+    "chronos-surefire",
+    "chronos-report",
+    "animal-sniffer",
+    "appassembler",
+    "build-helper",
+    "buildnumber",
+    "cassandra",
+    "ditaot",
+    "exec",
+    "keytool",
+    "latex",
+    "license",
+    "ounce",
+    "rpm",
+    "siteskinner",
+    "sql",
+    "truezip",
+    "versions",
+    "vfs",
+    "xml"
   );
 
   private final List<Plugin> plugins = new ArrayList<>();
