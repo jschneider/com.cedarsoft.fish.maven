@@ -96,18 +96,6 @@ public class MavenCompletionGenerator extends AbstractMojo {
 
       project = projectBuilder.buildStandaloneSuperProject(configuration);
 
-      System.out.println("Project " + project);
-
-
-      Artifact artifact = artifactFactory.createPluginArtifact(
-        "net.sourceforge.cobertura"
-        , "cobertura",
-        VersionRange.createFromVersion("2.1.1"));
-
-      System.out.println("Articact " + artifact);
-      System.out.println("available versions " + artifact.getAvailableVersions());
-
-
       addDefaultPlugins();
       addMojoHausPlugins();
       addOtherPlugins();
